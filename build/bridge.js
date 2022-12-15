@@ -77,7 +77,12 @@ class ArtNetHueBridge {
             this.hueApi = yield node_hue_api_1.v3.api.createLocal(this.configuration.hueHost)
                 .connect(this.configuration.hueUsername);
             const entertainment = yield this.hueApi.groups.getEntertainment();
+            for (const room of entertainment) {
+                console.log("Found room " + room.id);
+            }
+            console.log("Now searching for room " + this.configuration.entertainmentRoomId);
             const rooms = entertainment.filter(ent => ent.id === this.configuration.entertainmentRoomId);
+            console.log("Number of rooms found matching this id: " + rooms.length);
             if (rooms.length !== 1) {
                 throw new Error(`Entertainment room with id ${this.configuration.entertainmentRoomId} was not found`);
             }
