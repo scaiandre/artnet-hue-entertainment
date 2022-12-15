@@ -114,6 +114,7 @@ class ArtNetHueEntertainmentCliHandler {
 
     async startProcess() {
         // TODO: Detect when setup has not yet been run
+        console.log("Config resides in " + this.config.path);
         const host = this.config.get('hue.host') as string;
         const username = this.config.get('hue.username') as string;
         const clientKey = this.config.get('hue.clientKey') as string;

@@ -119,6 +119,7 @@ class ArtNetHueEntertainmentCliHandler {
     startProcess() {
         return __awaiter(this, void 0, void 0, function* () {
             // TODO: Detect when setup has not yet been run
+            console.log("Config resides in " + this.config.path);
             const host = this.config.get('hue.host');
             const username = this.config.get('hue.username');
             const clientKey = this.config.get('hue.clientKey');
