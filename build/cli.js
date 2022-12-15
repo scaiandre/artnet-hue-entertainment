@@ -140,29 +140,49 @@ class ArtNetHueEntertainmentCliHandler {
                 lights: [
                     {
                         dmxStart: 1,
-                        lightId: '31',
+                        lightId: '10',
                         channelMode: '8bit-dimmable',
                     },
                     {
-                        dmxStart: 5,
-                        lightId: '32',
+                        dmxStart: 103,
+                        lightId: '18',
                         channelMode: '8bit-dimmable',
                     },
                     {
-                        dmxStart: 9,
-                        lightId: '33',
+                        dmxStart: 107,
+                        lightId: '6',
                         channelMode: '8bit-dimmable',
                     },
                     {
-                        dmxStart: 13,
-                        lightId: '34',
+                        dmxStart: 111,
+                        lightId: '7',
                         channelMode: '8bit-dimmable',
                     },
-                    // {
-                    //     dmxStart: 5,
-                    //     lightId: '11',
-                    //     channelMode: '8bit-dimmable',
-                    // },
+                    {
+                        dmxStart: 115,
+                        lightId: '12',
+                        channelMode: '8bit-dimmable',
+                    },
+                    {
+                        dmxStart: 119,
+                        lightId: '13',
+                        channelMode: '8bit-dimmable',
+                    },
+                    {
+                        dmxStart: 123,
+                        lightId: '17',
+                        channelMode: '8bit-dimmable',
+                    },
+                    {
+                        dmxStart: 127,
+                        lightId: '20',
+                        channelMode: '8bit-dimmable',
+                    },
+                    {
+                        dmxStart: 131,
+                        lightId: '5',
+                        channelMode: '8bit-dimmable',
+                    },
                 ]
             });
             yield bridge.start();
