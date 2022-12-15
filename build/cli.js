@@ -19,6 +19,18 @@ class ArtNetHueEntertainmentCliHandler {
         this.config = new source_1.default();
         this.args = args;
     }
+    getIPAddress() {
+        const interfaces = require('os').networkInterfaces();
+        for (const devName in interfaces) {
+            const iface = interfaces[devName];
+            for (let i = 0; i < iface.length; i++) {
+                const alias = iface[i];
+                if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
+                    return alias.address;
+            }
+        }
+        return '0.0.0.0';
+    }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.args.length === 0) {
@@ -118,19 +130,59 @@ class ArtNetHueEntertainmentCliHandler {
                 hueHost: host,
                 hueUsername: username,
                 hueClientKey: clientKey,
-                entertainmentRoomId: 6,
-                artNetBindIp: '172.24.142.110',
+                entertainmentRoomId: 5,
+                artNetBindIp: this.getIPAddress(),
                 lights: [
                     {
-                        dmxStart: 1,
-                        lightId: '10',
+                        dmxStart: 95,
+                        lightId: '11',
                         channelMode: '8bit-dimmable',
                     },
-                    // {
-                    //     dmxStart: 5,
-                    //     lightId: '11',
-                    //     channelMode: '8bit-dimmable',
-                    // },
+                    {
+                        dmxStart: 99,
+                        lightId: '15',
+                        channelMode: '8bit-dimmable',
+                    },
+                    {
+                        dmxStart: 103,
+                        lightId: '18',
+                        channelMode: '8bit-dimmable',
+                    },
+                    {
+                        dmxStart: 107,
+                        lightId: '6',
+                        channelMode: '8bit-dimmable',
+                    },
+                    {
+                        dmxStart: 111,
+                        lightId: '7',
+                        channelMode: '8bit-dimmable',
+                    },
+                    {
+                        dmxStart: 115,
+                        lightId: '12',
+                        channelMode: '8bit-dimmable',
+                    },
+                    {
+                        dmxStart: 119,
+                        lightId: '13',
+                        channelMode: '8bit-dimmable',
+                    },
+                    {
+                        dmxStart: 123,
+                        lightId: '17',
+                        channelMode: '8bit-dimmable',
+                    },
+                    {
+                        dmxStart: 127,
+                        lightId: '20',
+                        channelMode: '8bit-dimmable',
+                    },
+                    {
+                        dmxStart: 131,
+                        lightId: '5',
+                        channelMode: '8bit-dimmable',
+                    },
                 ]
             });
             yield bridge.start();
