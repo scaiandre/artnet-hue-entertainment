@@ -21,6 +21,18 @@ class ArtNetHueEntertainmentCliHandler {
         this.config = nconf.argv().env();
         this.args = args;
     }
+    getIPAddress() {
+        const interfaces = require('os').networkInterfaces();
+        for (const devName in interfaces) {
+            const iface = interfaces[devName];
+            for (let i = 0; i < iface.length; i++) {
+                const alias = iface[i];
+                if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
+                    return alias.address;
+            }
+        }
+        return '0.0.0.0';
+    }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.checkOrCreateConfigFile();
@@ -123,8 +135,8 @@ class ArtNetHueEntertainmentCliHandler {
                 hueHost: host,
                 hueUsername: username,
                 hueClientKey: clientKey,
-                entertainmentRoomId: 200,
-                artNetBindIp: '172.24.184.16',
+                entertainmentRoomId: 5,
+                artNetBindIp: this.getIPAddress(),
                 lights: [
                     {
                         dmxStart: 1,
