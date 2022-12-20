@@ -41,7 +41,7 @@ class ArtNetHueEntertainmentCliHandler {
             return;
         }
 
-        console.log("Run mode is <" + this.args[0] + ">");
+        console.log("Run mode passed via command line is <" + this.args[0] + ">");
 
         const runMode = this.args[0] === "from-config" ? this.config.get('run-mode') : this.args[0]
         console.log("Effective run mode is <" + runMode + ">");
