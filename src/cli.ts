@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import * as minimist from 'minimist';
 import { v3, discovery } from 'node-hue-api';
-import { ArtNetHueBridge } from './bridge';
 import * as nconf from 'nconf';
 import { stat, open } from 'fs/promises';
 
 const CONFIG_FILE_PATH = 'config.json';
+import {ArtNetHueBridge, LightConfiguration} from './bridge';
 
 class ArtNetHueEntertainmentCliHandler {
 
@@ -15,6 +15,20 @@ class ArtNetHueEntertainmentCliHandler {
     constructor(args: string[]) {
         this.config = nconf.argv().env();
         this.args = args;
+    }
+
+    getIPAddress() {
+        const interfaces = require('os').networkInterfaces();
+        for (const devName in interfaces) {
+            const iface = interfaces[devName];
+
+            for (let i = 0; i < iface.length; i++) {
+                const alias = iface[i];
+                if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
+                    return alias.address;
+            }
+        }
+        return '0.0.0.0';
     }
 
     async run() {
@@ -27,14 +41,25 @@ class ArtNetHueEntertainmentCliHandler {
             return;
         }
 
-        if (this.args[0] === 'discover') {
+
+        console.log("Run mode passed via command line is <" + this.args[0] + ">");
+
+        const runMode = this.args[0] === "from-config" ? this.config.get('run-mode') : this.args[0]
+        console.log("Effective run mode is <" + runMode + ">");
+
+        if (runMode === 'discover') {
             await this.discoverBridges();
-        } else if (this.args[0] === 'pair') {
-            await this.runPair(this.args.slice(1));
-        } else if (this.args[0] === 'run') {
+        } else if (runMode === 'pair') {
+            const ip = this.args[0] === "from-config" ?
+                ["--ip", this.config.get('hue.host') as string]
+                : this.args.slice(1)
+            await this.runPair(ip);
+        } else if (runMode === 'run') {
             await this.startProcess();
-        } else if (this.args[0] === 'list-rooms') {
+        } else if (runMode === 'list-rooms') {
             await this.listEntertainmentRooms();
+        } else if (runMode === 'config-path') {
+            console.log(this.config.path);
         } else {
             this.printHelp();
             return;
@@ -51,7 +76,9 @@ class ArtNetHueEntertainmentCliHandler {
         console.log('  pair                 Pair with a Hue bridge. Press the link button on the bridge before running');
         console.log('    --ip               The IP address of the Hue bridge. Both IPv4 and IPv6 are supported.');
         console.log('  list-rooms           List all available entertainment rooms');
+        console.log('  config-path          Print the path to the configuration file, for manual editing.');
         console.log('  run                  Run the ArtNet to Hue bridge.');
+        console.log('  from-config          Use configuration setting "run-mode" from configuration file as parameter. For \'pair\', configuration entry \'hue.host\' is used for \'--ip\' ');
         process.exit(1);
     }
 
@@ -106,9 +133,12 @@ class ArtNetHueEntertainmentCliHandler {
 
     async startProcess() {
         // TODO: Detect when setup has not yet been run
+        // console.log("Config resides in " + this.config.);
         const host = this.config.get('hue:host') as string;
         const username = this.config.get('hue:username') as string;
         const clientKey = this.config.get('hue:clientKey') as string;
+        const entertainmentRoomId = this.config.get('hue.entertainmentRoomId') as number;
+        const lights = this.config.get('lights') as LightConfiguration[];
         if (host === undefined || username === undefined || clientKey === undefined) {
             console.log('No Hue bridge is paired yet. Please pair a bridge first');
             return;
@@ -118,35 +148,9 @@ class ArtNetHueEntertainmentCliHandler {
             hueHost: host,
             hueUsername: username,
             hueClientKey: clientKey,
-            entertainmentRoomId: 200,
-            artNetBindIp: '172.24.184.16',
-            lights: [
-                {
-                    dmxStart: 1,
-                    lightId: '31',
-                    channelMode: '8bit-dimmable',
-                },
-                {
-                    dmxStart: 5,
-                    lightId: '32',
-                    channelMode: '8bit-dimmable',
-                },
-                {
-                    dmxStart: 9,
-                    lightId: '33',
-                    channelMode: '8bit-dimmable',
-                },
-                {
-                    dmxStart: 13,
-                    lightId: '34',
-                    channelMode: '8bit-dimmable',
-                },
-                // {
-                //     dmxStart: 5,
-                //     lightId: '11',
-                //     channelMode: '8bit-dimmable',
-                // },
-            ]
+            entertainmentRoomId: entertainmentRoomId,
+            artNetBindIp: this.getIPAddress(),
+            lights: lights,
         });
         await bridge.start();
     }
