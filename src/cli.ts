@@ -2,7 +2,7 @@
 import * as minimist from 'minimist';
 import { v3, discovery } from 'node-hue-api';
 import * as nconf from 'nconf';
-import { stat, open } from 'fs/promises';
+import { stat, open, realpath } from 'fs/promises';
 
 const CONFIG_FILE_PATH = 'config.json';
 import {ArtNetHueBridge, LightConfiguration} from './bridge';
@@ -164,12 +164,17 @@ class ArtNetHueEntertainmentCliHandler {
 
     private async checkOrCreateConfigFile() {
         let exists: boolean;
+
+        const configFilePath = await realpath(CONFIG_FILE_PATH);
+        console.log("Config file is probably <" + configFilePath + ">");
         try {
             const fileInfo = await stat(CONFIG_FILE_PATH);
             exists = fileInfo.isFile();
         } catch (e) {
             exists = false;
         }
+
+        console.log("Config file exists " + exists);
 
         if (!exists) {
             const fd = await open(CONFIG_FILE_PATH, 'w');

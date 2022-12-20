@@ -165,6 +165,8 @@ class ArtNetHueEntertainmentCliHandler {
     checkOrCreateConfigFile() {
         return __awaiter(this, void 0, void 0, function* () {
             let exists;
+            const configFilePath = yield promises_1.realpath(CONFIG_FILE_PATH);
+            console.log("Config file is probably <" + configFilePath + ">");
             try {
                 const fileInfo = yield promises_1.stat(CONFIG_FILE_PATH);
                 exists = fileInfo.isFile();
@@ -172,6 +174,7 @@ class ArtNetHueEntertainmentCliHandler {
             catch (e) {
                 exists = false;
             }
+            console.log("Config file exists " + exists);
             if (!exists) {
                 const fd = yield promises_1.open(CONFIG_FILE_PATH, 'w');
                 yield fd.write('{}');
