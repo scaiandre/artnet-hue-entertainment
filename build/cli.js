@@ -135,7 +135,7 @@ class ArtNetHueEntertainmentCliHandler {
             const host = this.config.get('hue:host');
             const username = this.config.get('hue:username');
             const clientKey = this.config.get('hue:clientKey');
-            const entertainmentRoomId = this.config.get('hue.entertainmentRoomId');
+            const entertainmentRoomId = this.config.get('hue:entertainmentRoomId');
             const lights = this.config.get('lights');
             if (host === undefined || username === undefined || clientKey === undefined) {
                 console.log('No Hue bridge is paired yet. Please pair a bridge first');
