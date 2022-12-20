@@ -37,16 +37,21 @@ class ArtNetHueEntertainmentCliHandler {
                 this.printHelp();
                 return;
             }
-            if (this.args[0] === 'discover') {
+            console.log("Run mode is <" + this.args[0] + ">");
+            const runMode = this.args[0] === "from-config" ? this.config.get('run-mode') : this.args[0];
+            if (runMode === 'discover') {
                 yield this.discoverBridges();
             }
-            else if (this.args[0] === 'pair') {
-                yield this.runPair(this.args.slice(1));
+            else if (runMode === 'pair') {
+                const ip = this.args[0] === "from-config" ?
+                    ["--ip", this.config.get('hue.host')]
+                    : this.args.slice(1);
+                yield this.runPair(ip);
             }
-            else if (this.args[0] === 'run') {
+            else if (runMode === 'run') {
                 yield this.startProcess();
             }
-            else if (this.args[0] === 'config-path') {
+            else if (runMode === 'config-path') {
                 console.log(this.config.path);
             }
             else {
@@ -123,6 +128,8 @@ class ArtNetHueEntertainmentCliHandler {
             const host = this.config.get('hue.host');
             const username = this.config.get('hue.username');
             const clientKey = this.config.get('hue.clientKey');
+            const entertainmentRoomId = this.config.get('hue.entertainmentRoomId');
+            const lights = this.config.get('hue.lights');
             if (host === undefined || username === undefined || clientKey === undefined) {
                 console.log('No Hue bridge is paired yet. Please pair a bridge first');
                 return;
@@ -131,60 +138,9 @@ class ArtNetHueEntertainmentCliHandler {
                 hueHost: host,
                 hueUsername: username,
                 hueClientKey: clientKey,
-                entertainmentRoomId: 5,
+                entertainmentRoomId: entertainmentRoomId,
                 artNetBindIp: this.getIPAddress(),
-                lights: [
-                    {
-                        dmxStart: 95,
-                        lightId: '11',
-                        channelMode: '8bit-dimmable',
-                    },
-                    {
-                        dmxStart: 99,
-                        lightId: '15',
-                        channelMode: '8bit-dimmable',
-                    },
-                    {
-                        dmxStart: 103,
-                        lightId: '18',
-                        channelMode: '8bit-dimmable',
-                    },
-                    {
-                        dmxStart: 107,
-                        lightId: '6',
-                        channelMode: '8bit-dimmable',
-                    },
-                    {
-                        dmxStart: 111,
-                        lightId: '7',
-                        channelMode: '8bit-dimmable',
-                    },
-                    {
-                        dmxStart: 115,
-                        lightId: '12',
-                        channelMode: '8bit-dimmable',
-                    },
-                    {
-                        dmxStart: 119,
-                        lightId: '13',
-                        channelMode: '8bit-dimmable',
-                    },
-                    {
-                        dmxStart: 123,
-                        lightId: '17',
-                        channelMode: '8bit-dimmable',
-                    },
-                    {
-                        dmxStart: 127,
-                        lightId: '20',
-                        channelMode: '8bit-dimmable',
-                    },
-                    {
-                        dmxStart: 131,
-                        lightId: '5',
-                        channelMode: '8bit-dimmable',
-                    },
-                ]
+                lights: lights,
             });
             yield bridge.start();
         });
