@@ -74,6 +74,7 @@ class ArtNetHueEntertainmentCliHandler {
         console.log('    --ip               The IP address of the Hue bridge. Both IPv4 and IPv6 are supported.');
         console.log('  list-rooms           List all available entertainment rooms');
         console.log('  run                  Run the ArtNet to Hue bridge.');
+        console.log('  from-config          Use configuration setting "run-mode" from configuration file');
         process.exit(1);
     }
 
