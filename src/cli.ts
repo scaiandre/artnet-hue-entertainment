@@ -58,8 +58,6 @@ class ArtNetHueEntertainmentCliHandler {
             await this.startProcess();
         } else if (runMode === 'list-rooms') {
             await this.listEntertainmentRooms();
-        } else if (runMode === 'config-path') {
-            console.log(this.config.path);
         } else {
             this.printHelp();
             return;
@@ -76,7 +74,6 @@ class ArtNetHueEntertainmentCliHandler {
         console.log('  pair                 Pair with a Hue bridge. Press the link button on the bridge before running');
         console.log('    --ip               The IP address of the Hue bridge. Both IPv4 and IPv6 are supported.');
         console.log('  list-rooms           List all available entertainment rooms');
-        console.log('  config-path          Print the path to the configuration file, for manual editing.');
         console.log('  run                  Run the ArtNet to Hue bridge.');
         console.log('  from-config          Use configuration setting "run-mode" from configuration file as parameter. For \'pair\', configuration entry \'hue.host\' is used for \'--ip\' ');
         process.exit(1);
